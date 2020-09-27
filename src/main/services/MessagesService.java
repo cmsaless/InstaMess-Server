@@ -1,26 +1,60 @@
-package main.java.server;
+package main.services;
 
-//package backend.server;
-//
-//import java.util.UUID;
-//
-//import backend.SocketThread;
-//import main.java.server.Server;
-//
-///**
-// * This class is used for taking the pieces of information parsed from the
-// * initial messages and further processing them.
-// *
-// * @author cmsaless
-// */
-public class MessageFunctions {
+import main.server.Server;
+import main.server.ServerSocketThread;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+public class MessagesService {
 
     private Server server;
 
-    public MessageFunctions(Server server) {
+    public MessagesService(Server server) {
         this.server = server;
     }
-}
+
+    public void parseMessage(String message, ServerSocketThread source) {
+
+        JSONObject json = convertMessageToJson(message);
+
+        String messageType = (String) json.get("type");
+        messageType = messageType.toUpperCase();
+
+        switch (messageType) {
+            case "NEW USER": {
+//                String newUsername = (String) json.get("username");
+//                String respMessage = newUsername + " has joined the chat!";
+//                JSONObject respJson = new JSONObject();
+//                respJson.put("type", "");
+//                server.sendThroughSockets(respMessage);
+            }
+            break;
+            case "MESSAGE": {
+
+            }
+            break;
+            case "EXIT": {
+
+            }
+            break;
+        }
+    }
+
+    private JSONObject convertMessageToJson(String message) {
+
+        JSONParser parser = new JSONParser();
+        JSONObject json = null;
+
+        try {
+            json = (JSONObject) parser.parse(message);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return json;
+    }
+
 //
 //    /**
 //     * If the server receives a USER message...
@@ -310,3 +344,5 @@ public class MessageFunctions {
 //        }
 //    }
 //}
+
+}

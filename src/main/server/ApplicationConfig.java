@@ -1,17 +1,19 @@
-package main.java.config;
+package main.server;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-public class ApplicationProperties extends Properties {
+public class ApplicationConfig extends Properties {
 
-    public ApplicationProperties() {
+    public ApplicationConfig() {
         JSONObject jsonObject = loadConfigFile();
         readJsonObjectIntoProperties(jsonObject);
     }
@@ -33,7 +35,7 @@ public class ApplicationProperties extends Properties {
         JSONObject jsonObject = null;
 
         try {
-            jsonObject = (JSONObject) parser.parse(new FileReader("src\\main\\resources\\config.json"));
+            jsonObject = (JSONObject) parser.parse(new FileReader("src\\config\\config.json"));
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
