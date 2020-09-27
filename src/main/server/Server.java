@@ -1,7 +1,7 @@
 package main.server;
 
+import main.driver.ApplicationConfig;
 import main.services.MessagesService;
-import main.services.UserService;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -12,34 +12,27 @@ import java.util.HashSet;
 public class Server {
 
     private MessagesService messagesService;
-    private UserService userService;
-
-    HashSet<ServerSocketThread> allConnections;
+    private HashSet<ServerSocketThread> allConnections;
 
     private String ipAddress;
     private String port;
 
-    private HashSet<ChatRoom> rooms;
+    public Server(MessagesService messagesService, ApplicationConfig config) {
 
-    public Server(ApplicationConfig config) {
-
-        messagesService = new MessagesService(this);
-        userService = new UserService();
-
+        this.messagesService = messagesService;
         allConnections = new HashSet<>();
 
         ipAddress = (String) config.get("server_ip_address");
         port = (String) config.get("server_port");
-        rooms = new HashSet<>();
 
         try {
             openServerSocket();
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void openServerSocket() throws IOException, InterruptedException {
+    public void openServerSocket() throws IOException {
 
         ServerSocket serverSocket = new ServerSocket(Integer.parseInt(port), 1, InetAddress.getByName(ipAddress));
         System.out.println("Server running...");
@@ -48,32 +41,32 @@ public class Server {
             Socket clientSocket = serverSocket.accept();
             System.out.println("Accepting new connection... " + clientSocket.getLocalSocketAddress());
             ServerSocketThread socketThread = new ServerSocketThread(this, clientSocket);
-            // check if address is a pre-existing conn
+//            overwriteExistingConnections(socketThread);
             allConnections.add(socketThread);
             socketThread.start();
         }
     }
 
     public void recvThroughSocket(String message, ServerSocketThread source) {
-        messagesService.parseMessage(message, source);
+        String response = messagesService.parseMessage(message, source).toJSONString();
+        sendThroughSockets(response);
     }
 
-    public void sendThroughSockets(String output) {
-        byte[] outputArray = output.getBytes();
+    public void sendThroughSockets(String response) {
         for (ServerSocketThread sockTh: allConnections) {
-            sockTh.send(outputArray);
+            sockTh.send(response);
         }
     }
 
-    public ChatRoom createChatRoom(String name, String password, boolean isPrivate, User host) {
-        ChatRoom newRoom = new ChatRoom(name, password, isPrivate, host);
-        return newRoom;
-    }
-
-    public void addUser(String username, ServerSocketThread userSocketThread) {
-        // check if blocked
-        // check if
-//        userService.createUser(username, userSocketThread);
+    private void overwriteExistingConnections(ServerSocketThread newSocketThread) {
+        InetAddress newAddress = newSocketThread.getSocket().getInetAddress();
+        for (ServerSocketThread servSockTh: allConnections) {
+            InetAddress existingAddress = servSockTh.getSocket().getInetAddress();
+            if (existingAddress.equals(newAddress)) {
+                allConnections.remove(servSockTh);
+                return;
+            }
+        }
     }
 
 }

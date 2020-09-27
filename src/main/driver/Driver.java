@@ -1,11 +1,14 @@
 package main.driver;
 
-import main.server.ApplicationConfig;
 import main.server.Server;
+import main.services.MessagesService;
 
 public class Driver {
     public static void main(String[] args) {
+
         final ApplicationConfig appProperties = new ApplicationConfig();
-        new Server(appProperties);
+        final MessagesService messagesService = new MessagesService();
+
+        new Server(messagesService, appProperties);
     }
 }

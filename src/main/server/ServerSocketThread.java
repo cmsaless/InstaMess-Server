@@ -2,7 +2,6 @@ package main.server;
 
 import main.socketthread.SocketThread;
 
-import java.io.*;
 import java.net.Socket;
 
 public class ServerSocketThread extends SocketThread {
@@ -28,16 +27,16 @@ public class ServerSocketThread extends SocketThread {
      * It waits a quarter of a second after each read to lower overhead.
      */
 
-    public void run() {
-        try {
-            while (true) {
-                String line = super.inStream.readUTF();
-                recv(line);
-            }
-        } catch (IOException ex) {
-            return;
-        }
-    }
+//    public void run() {
+//        try {
+//            while (true) {
+//                String line = super.inStream.readUTF();
+//                recv(line);
+//            }
+//        } catch (IOException ex) {
+//            return;
+//        }
+//    }
 
     @Override
     public void recv(String input) {
@@ -54,16 +53,15 @@ public class ServerSocketThread extends SocketThread {
      *
      * @param output - text to send
      */
-    public void send(byte[] output) {
-        try {
-            outStream.writeInt(output.length);
-            outStream.write(output);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
+//    public void send(String output) {
+//        try {
+//            outStream.writeUTF(output);
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        }
+//    }
 
-    public Socket getSocket() {
-        return super.getSocket();
-    }
+//    public Socket getSocket() {
+//        return super.getSocket();
+//    }
 }
