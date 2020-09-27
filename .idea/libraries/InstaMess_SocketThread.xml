@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="InstaMess-SocketThread">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../InstaMess-SocketThread/out/artifacts/InstaMess_SocketThread_jar/InstaMess-SocketThread.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
